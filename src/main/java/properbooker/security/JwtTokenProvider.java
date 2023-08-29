@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -35,7 +34,7 @@ public class JwtTokenProvider {
   private long validityInMilliseconds = 3600000; // 1h
 
   @Autowired
-  private MyUserDetails myUserDetails;
+  private UserDetails userDetails;
 
   @PostConstruct
   protected void init() {
@@ -59,7 +58,7 @@ public class JwtTokenProvider {
   }
 
   public Authentication getAuthentication(String token) {
-    UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
+    org.springframework.security.core.userdetails.UserDetails userDetails = this.userDetails.loadUserByUsername(getUsername(token));
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
 
